@@ -102,6 +102,7 @@ bun run start
 
 #### 🕌 **Doa API**
 - `GET /api/v1/doa` - List all prayers (with search & pagination)
+- `GET /api/v1/doa/:apiId` - Get prayer detail
 
 #### 📖 **Surah API**
 - `GET /api/v1/surah` - List all surahs (with search & pagination)
@@ -113,6 +114,12 @@ bun run start
 - `GET /api/v1/juz/:number` - Get juz detail
 - `GET /api/v1/juz/:number/surah/:surahNumber` - Get surah verses by juz (with filter)
 - `GET /api/v1/juz/:number/surah/:surahNumber/tafsir` - Get tafsir by juz (with filter)
+
+#### 📊 **Analytics API**
+- `GET /api/v1/analytics/summary` - Analytics overview (total hits, popular endpoints, 7-day stats)
+- `GET /api/v1/analytics/daily?days=7` - Daily statistics for last N days
+- `GET /api/v1/analytics/popular-endpoints?limit=10` - Most accessed endpoints
+- `GET /api/v1/analytics/content-popularity` - Most popular content (surahs, juz, duas)
 
 #### ❤️ **Health Check**
 - `GET /api/v1/health` - Server & database status
@@ -205,28 +212,6 @@ Expected response:
 }
 ```
 
-## 📝 Environment Variables Reference
-
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | - | ✅ |
-| `PORT` | Server port | `3333` | ❌ |
-| `API_PREFIX` | API route prefix | `/api/v1` | ✅ |
-| `NODE_ENV` | Environment mode | `development` | ❌ |
-| `CORS_ORIGIN` | Allowed origins (comma-separated) | `*` | ❌ |
-| `RATE_LIMIT_MAX` | Max requests per window | `100` | ❌ |
-| `RATE_LIMIT_TIME_WINDOW` | Rate limit time window | `15 minutes` | ❌ |
-
-## 🚀 Deployment Checklist
-
-- [ ] Set `NODE_ENV=production`
-- [ ] Configure `CORS_ORIGIN` with FE domain
-- [ ] Adjust `RATE_LIMIT_MAX` based on traffic
-- [ ] Setup database backup
-- [ ] Enable HTTPS/SSL
-- [ ] Configure health check monitoring
-- [ ] Review error logs regularly
-
 ## 🔮 Planned Features
 
 ### Upcoming Features (Requires Authentication)
@@ -234,10 +219,6 @@ Expected response:
 - **Reading History**: Track user's reading progress and recently viewed content
 
 > **Note**: Both features above require authentication system implementation first.
-
-### Next Enhancements
-- **Caching Layer**: Redis integration for improved performance
-- **Analytics**: Usage tracking and insights (✅ Completed)
 
 ## 🙏 Acknowledgments
 
