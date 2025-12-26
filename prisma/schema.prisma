@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Doa {
+  id          String   @id @default(uuid())
+  apiId       Int      @unique @map("api_id") // ID from external API
+  group       String   // Group/category of doa
+  name        String   // Doa name (title)
+  arabic      String   @db.Text // Arabic text
+  latin       String   @db.Text // Latin transliteration
+  meaning     String   @db.Text // Indonesian meaning/translation
+  description String   @db.Text // Description/source
+  tags        String[] // Doa tags
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([name, description]) // Constraint to prevent duplication
+  @@map("doas")
+}
+
+model Surah {
+  id              String   @id @default(uuid())
+  number          Int      @unique // Surah number (1-114)
+  name            String   // Arabic name
+  latinName       String   @map("latin_name") // Latin transliteration
+  verseCount      Int      @map("verse_count") // Number of verses
+  revelationPlace String   @map("revelation_place") // Mekah/Madinah
+  meaning         String   // Indonesian meaning of surah name
+  description     String   @db.Text // Surah description
+  audioFull       Json?    @map("audio_full") // Full audio URLs
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  verses  Verse[]
+  tafsirs Tafsir[]
+
+  @@map("surahs")
+}
+
+model Verse {
+  id          String   @id @default(uuid())
+  surahNumber Int      @map("surah_number") // Surah number reference
+  number      Int      // Verse number within surah
+  juz         Int      // Juz number (1-30)
+  arabic      String   @db.Text // Arabic text
+  latin       String   @db.Text // Latin transliteration
+  indonesian  String   @db.Text // Indonesian translation
+  audio       Json?    // Audio URLs for this verse
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  surah  Surah   @relation(fields: [surahNumber], references: [number])
+  tafsir Tafsir?
+
+  @@unique([surahNumber, number]) // Unique constraint per verse in surah
+  @@map("verses")
+}
+
+model Tafsir {
+  id          String   @id @default(uuid())
+  surahNumber Int      @map("surah_number") // Surah number reference
+  verseNumber Int      @map("verse_number") // Verse number within surah
+  text        String   @db.Text // Tafsir text (Indonesian interpretation)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  surah Surah @relation(fields: [surahNumber], references: [number])
+  verse Verse @relation(fields: [surahNumber, verseNumber], references: [surahNumber, number])
+
+  @@unique([surahNumber, verseNumber]) // Unique constraint per verse in surah
+  @@map("tafsirs")
+}
+
+model Analytics {
+  id        String   @id @default(uuid())
+  endpoint  String   // e.g., "/api/v1/surah/1"
+  method    String   // GET, POST, etc
+  hitCount  Int      @default(1) @map("hit_count")
+  lastHit   DateTime @updatedAt @map("last_hit")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([endpoint, method])
+  @@index([endpoint])
+  @@index([lastHit])
+  @@map("analytics")
+}
+
+model DailyStats {
+  id        String   @id @default(uuid())
+  date      DateTime @unique @db.Date
+  totalHits Int      @default(0) @map("total_hits")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([date])
+  @@map("daily_stats")
+}

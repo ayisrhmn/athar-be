@@ -1,0 +1,17 @@
+services:
+  services:
+    build: .
+    image: athar-be:dev
+    container_name: athar-be
+    env_file: .env
+    ports:
+      - "3099:3099"
+    networks:
+      - postgres_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+networks:
+  postgres_network:
+    external: true
