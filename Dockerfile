@@ -13,12 +13,7 @@ COPY . .
 # Generate Prisma Client
 RUN bun run prisma-generate
 
-# Run database migrations
-RUN bun run prisma migrate deploy
-
-# Seed database (production data)
-RUN bun run seed:surah && bun run seed:tafsir && bun run seed:doa || true
-
 EXPOSE 3099
 
-CMD ["bun", "run", "start"]
+# Run migrations & seed at runtime (when DATABASE_URL is available)
+CMD ["sh", "-c", "bun run prisma migrate deploy && bun run seed:doa && bun run seed:surah && bun run seed:tafsir || true && bun run start"]
