@@ -31,18 +31,18 @@ bun install
 
 3. Setup environment variables (`.env`):
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/athar_db
-
-# Server
-PORT=3099
+# Environment variables for Athar API server
 API_PREFIX=/api/v1
+DATABASE_URL=postgres://user:password@localhost:5432/my_database
+PORT=3099
+
+# Change to 'production' in a production environment
 NODE_ENV=development
 
-# CORS (comma-separated for multiple origins)
+# Change CORS_ORIGIN as needed for production
 CORS_ORIGIN=*
 
-# Rate Limiting
+# Rate limiting settings
 RATE_LIMIT_MAX=100
 RATE_LIMIT_TIME_WINDOW=15 minutes
 ```
