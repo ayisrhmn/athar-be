@@ -106,14 +106,14 @@ bun run start
 
 #### 📖 **Surah API**
 - `GET /api/v1/surah` - List all surahs (with search & pagination)
-- `GET /api/v1/surah/:number` - Get surah with verses (with verse filter)
-- `GET /api/v1/surah/:number/tafsir` - Get surah tafsir (with verse filter)
+- `GET /api/v1/surah/:number` - Get surah with all verses
+- `GET /api/v1/surah/:number/tafsir` - Get surah tafsir for all verses
 
 #### 🔢 **Juz API**
 - `GET /api/v1/juz` - List all 30 juz
 - `GET /api/v1/juz/:number` - Get juz detail
-- `GET /api/v1/juz/:number/surah/:surahNumber` - Get surah verses by juz (with filter)
-- `GET /api/v1/juz/:number/surah/:surahNumber/tafsir` - Get tafsir by juz (with filter)
+- `GET /api/v1/juz/:number/surah/:surahNumber` - Get surah verses filtered by juz
+- `GET /api/v1/juz/:number/surah/:surahNumber/tafsir` - Get surah tafsir filtered by juz
 
 #### 📊 **Analytics API**
 - `GET /api/v1/analytics/summary` - Analytics overview (total hits, popular endpoints, 7-day stats)
@@ -132,12 +132,6 @@ bun run start
 
 **Search** (Surah, Doa):
 - `search` - Search by latin name or meaning
-
-**Verse Filtering** (Surah, Juz detail):
-- `fromVerse` - Start from verse number
-- `toVerse` - End at verse number
-- Example: `?fromVerse=1&toVerse=10` (verses 1-10)
-- Example: `?fromVerse=5&toVerse=5` (verse 5 only)
 
 ## 🗂️ Project Structure
 
