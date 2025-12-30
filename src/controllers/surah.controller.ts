@@ -2,11 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import type { PrismaClient } from "@prisma/client";
 import { SurahService } from "../services/surah.service";
 import { successResponse, errorResponse } from "../utils/response";
-import type {
-  SurahQuery,
-  SurahParams,
-  SurahDetailQuery,
-} from "../schemas/surah.schema";
+import type { SurahQuery, SurahParams } from "../schemas/surah.schema";
 
 export class SurahController {
   private surahService: SurahService;
@@ -37,13 +33,12 @@ export class SurahController {
 
   /**
    * GET /surah/:number
-   * Get single surah by number with verses (optional filter)
+   * Get single surah by number with all verses
    */
   findByNumber = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { number } = request.params as SurahParams;
-      const query = request.query as SurahDetailQuery;
-      const surah = await this.surahService.findByNumber(number, query);
+      const surah = await this.surahService.findByNumber(number);
 
       if (!surah) {
         return reply.status(404).send(errorResponse("Surah not found", 404));
@@ -59,16 +54,12 @@ export class SurahController {
 
   /**
    * GET /surah/:number/tafsir
-   * Get surah with tafsir (optional verse filter)
+   * Get surah with all tafsir
    */
   findTafsirByNumber = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { number } = request.params as SurahParams;
-      const query = request.query as SurahDetailQuery;
-      const surahWithTafsir = await this.surahService.findTafsirByNumber(
-        number,
-        query
-      );
+      const surahWithTafsir = await this.surahService.findTafsirByNumber(number);
 
       if (!surahWithTafsir) {
         return reply.status(404).send(errorResponse("Surah not found", 404));

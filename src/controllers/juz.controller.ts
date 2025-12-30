@@ -2,11 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import type { PrismaClient } from "@prisma/client";
 import { JuzService } from "../services/juz.service";
 import { successResponse, errorResponse } from "../utils/response";
-import type {
-  JuzParams,
-  JuzSurahParams,
-  JuzSurahQuery,
-} from "../schemas/juz.schema";
+import type { JuzParams, JuzSurahParams } from "../schemas/juz.schema";
 
 export class JuzController {
   private juzService: JuzService;
@@ -53,17 +49,12 @@ export class JuzController {
 
   /**
    * GET /juz/:number/surah/:surahNumber
-   * Get surah verses filtered by juz (with optional verse filter)
+   * Get all surah verses filtered by juz
    */
   findSurahByJuz = async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { number, surahNumber } = request.params as JuzSurahParams;
-      const query = request.query as JuzSurahQuery;
-      const data = await this.juzService.findSurahByJuz(
-        number,
-        surahNumber,
-        query
-      );
+      const data = await this.juzService.findSurahByJuz(number, surahNumber);
 
       if (!data) {
         return reply
@@ -81,7 +72,7 @@ export class JuzController {
 
   /**
    * GET /juz/:number/surah/:surahNumber/tafsir
-   * Get surah tafsir filtered by juz (with optional verse filter)
+   * Get all surah tafsir filtered by juz
    */
   findSurahTafsirByJuz = async (
     request: FastifyRequest,
@@ -89,12 +80,7 @@ export class JuzController {
   ) => {
     try {
       const { number, surahNumber } = request.params as JuzSurahParams;
-      const query = request.query as JuzSurahQuery;
-      const data = await this.juzService.findSurahTafsirByJuz(
-        number,
-        surahNumber,
-        query
-      );
+      const data = await this.juzService.findSurahTafsirByJuz(number, surahNumber);
 
       if (!data) {
         return reply

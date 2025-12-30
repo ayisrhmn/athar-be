@@ -51,16 +51,9 @@ export const surahParamsSchema = z.object({
   number: z.coerce.number().min(1).max(114),
 });
 
-// Query params for surah detail (verse filter)
-export const surahDetailQuerySchema = z.object({
-  fromVerse: z.coerce.number().min(1).optional(),
-  toVerse: z.coerce.number().optional(),
-});
-
 // Types
 export type Surah = z.infer<typeof surahSchema>;
 export type Verse = z.infer<typeof verseSchema>;
 export type Tafsir = z.infer<typeof tafsirSchema>;
 export type SurahQuery = z.infer<typeof surahQuerySchema>;
 export type SurahParams = z.infer<typeof surahParamsSchema>;
-export type SurahDetailQuery = z.infer<typeof surahDetailQuerySchema>;

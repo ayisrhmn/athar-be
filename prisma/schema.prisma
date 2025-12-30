@@ -66,6 +66,8 @@ model Verse {
   tafsir Tafsir?
 
   @@unique([surahNumber, number]) // Unique constraint per verse in surah
+  @@index([juz]) // Index for queries filtering by juz
+  @@index([surahNumber, juz]) // Composite index for juz + surah queries
   @@map("verses")
 }
 
@@ -82,6 +84,7 @@ model Tafsir {
   verse Verse @relation(fields: [surahNumber, verseNumber], references: [surahNumber, number])
 
   @@unique([surahNumber, verseNumber]) // Unique constraint per verse in surah
+  @@index([surahNumber]) // Index for queries filtering by surah
   @@map("tafsirs")
 }
 

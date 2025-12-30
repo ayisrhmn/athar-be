@@ -3,11 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { env } from "../plugins/env";
 import { JuzController } from "../controllers/juz.controller";
-import {
-  juzParamsSchema,
-  juzSurahParamsSchema,
-  juzSurahQuerySchema,
-} from "../schemas/juz.schema";
+import { juzParamsSchema, juzSurahParamsSchema } from "../schemas/juz.schema";
 import { verseSchema, tafsirSchema } from "../schemas/surah.schema";
 import {
   baseResponseSchema,
@@ -118,10 +114,9 @@ export async function juzRoutes(app: FastifyInstance) {
       schema: {
         summary: "Get surah verses by juz",
         description:
-          "Get verses of a surah that belongs to a specific juz. Use query params to filter specific verses.",
+          "Get all verses of a surah that belongs to a specific juz.",
         tags: ["Juz"],
         params: juzSurahParamsSchema,
-        querystring: juzSurahQuerySchema,
         response: {
           200: baseResponseSchema.extend({
             data: z.object({
@@ -170,10 +165,9 @@ export async function juzRoutes(app: FastifyInstance) {
       schema: {
         summary: "Get surah tafsir by juz",
         description:
-          "Get tafsir of a surah that belongs to a specific juz. Use query params to filter specific verses.",
+          "Get tafsir for all verses of a surah that belongs to a specific juz.",
         tags: ["Juz"],
         params: juzSurahParamsSchema,
-        querystring: juzSurahQuerySchema,
         response: {
           200: baseResponseSchema.extend({
             data: z.object({

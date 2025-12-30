@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import type { SurahQuery, SurahDetailQuery } from "../schemas/surah.schema";
+import type { SurahQuery } from "../schemas/surah.schema";
 
 export class SurahService {
   constructor(private prisma: PrismaClient) {}
@@ -78,9 +78,9 @@ export class SurahService {
   }
 
   /**
-   * Get single surah by number with verses (optional filter)
+   * Get single surah by number with all verses
    */
-  async findByNumber(number: number, query: SurahDetailQuery) {
+  async findByNumber(number: number) {
     const surah = await this.prisma.surah.findUnique({
       where: { number },
     });
@@ -89,21 +89,9 @@ export class SurahService {
       return null;
     }
 
-    // Build where clause for verse filter
-    const verseWhere: any = { surahNumber: number };
-
-    if (query.fromVerse || query.toVerse) {
-      verseWhere.number = {};
-      if (query.fromVerse) {
-        verseWhere.number.gte = query.fromVerse;
-      }
-      if (query.toVerse) {
-        verseWhere.number.lte = query.toVerse;
-      }
-    }
-
+    // Get all verses for this surah
     const verses = await this.prisma.verse.findMany({
-      where: verseWhere,
+      where: { surahNumber: number },
       orderBy: { number: "asc" },
     });
 
@@ -133,9 +121,9 @@ export class SurahService {
   }
 
   /**
-   * Get surah with tafsir by surah number (optional verse filter)
+   * Get surah with tafsir by surah number
    */
-  async findTafsirByNumber(number: number, query: SurahDetailQuery) {
+  async findTafsirByNumber(number: number) {
     // Get surah info first
     const surah = await this.prisma.surah.findUnique({
       where: { number },
@@ -155,22 +143,9 @@ export class SurahService {
       return null;
     }
 
-    // Build where clause for verse filter
-    const tafsirWhere: any = { surahNumber: number };
-
-    if (query.fromVerse || query.toVerse) {
-      tafsirWhere.verseNumber = {};
-      if (query.fromVerse) {
-        tafsirWhere.verseNumber.gte = query.fromVerse;
-      }
-      if (query.toVerse) {
-        tafsirWhere.verseNumber.lte = query.toVerse;
-      }
-    }
-
-    // Get tafsir for this surah
+    // Get all tafsir for this surah
     const tafsir = await this.prisma.tafsir.findMany({
-      where: tafsirWhere,
+      where: { surahNumber: number },
       orderBy: { verseNumber: "asc" },
     });
 

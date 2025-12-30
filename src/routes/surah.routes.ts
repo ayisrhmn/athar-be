@@ -6,7 +6,6 @@ import { SurahController } from "../controllers/surah.controller";
 import {
   surahQuerySchema,
   surahParamsSchema,
-  surahDetailQuerySchema,
   surahSchema,
   verseSchema,
   tafsirSchema,
@@ -55,10 +54,9 @@ export async function surahRoutes(app: FastifyInstance) {
       schema: {
         summary: "Get surah by number",
         description:
-          "Get a single surah by its number (1-114) with verses. Use query params to filter specific verses.",
+          "Get a single surah by its number (1-114) with all verses.",
         tags: ["Surah"],
         params: surahParamsSchema,
-        querystring: surahDetailQuerySchema,
         response: {
           200: baseResponseSchema.extend({
             data: surahSchema.omit({ createdAt: true, updatedAt: true }).extend({
@@ -90,10 +88,9 @@ export async function surahRoutes(app: FastifyInstance) {
       schema: {
         summary: "Get surah tafsir",
         description:
-          "Get tafsir (interpretation) for a surah. Use query params to filter specific verses.",
+          "Get tafsir (interpretation) for all verses in a surah.",
         tags: ["Surah"],
         params: surahParamsSchema,
-        querystring: surahDetailQuerySchema,
         response: {
           200: baseResponseSchema.extend({
             data: surahSchema

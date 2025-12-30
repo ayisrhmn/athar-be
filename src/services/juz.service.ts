@@ -1,6 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
 import { juzMapping } from "../data/juz-mapping";
-import type { JuzSurahQuery } from "../schemas/juz.schema";
 
 export class JuzService {
   constructor(private prisma: PrismaClient) {}
@@ -128,13 +127,9 @@ export class JuzService {
   }
 
   /**
-   * Get surah verses filtered by juz (with optional verse filter)
+   * Get all surah verses filtered by juz
    */
-  async findSurahByJuz(
-    juzNumber: number,
-    surahNumber: number,
-    query: JuzSurahQuery
-  ) {
+  async findSurahByJuz(juzNumber: number, surahNumber: number) {
     const juzInfo = juzMapping.find((j) => j.juz === juzNumber);
 
     if (!juzInfo) {
@@ -160,26 +155,12 @@ export class JuzService {
       return null;
     }
 
-    // Build where clause
-    const verseWhere: any = {
-      surahNumber,
-      juz: juzNumber,
-    };
-
-    // Apply verse filter
-    if (query.fromVerse || query.toVerse) {
-      verseWhere.number = {};
-      if (query.fromVerse) {
-        verseWhere.number.gte = query.fromVerse;
-      }
-      if (query.toVerse) {
-        verseWhere.number.lte = query.toVerse;
-      }
-    }
-
-    // Get verses only for this juz
+    // Get all verses for this surah in this juz
     const verses = await this.prisma.verse.findMany({
-      where: verseWhere,
+      where: {
+        surahNumber,
+        juz: juzNumber,
+      },
       orderBy: { number: "asc" },
     });
 
@@ -261,13 +242,9 @@ export class JuzService {
   }
 
   /**
-   * Get surah tafsir filtered by juz (with optional verse filter)
+   * Get all surah tafsir filtered by juz
    */
-  async findSurahTafsirByJuz(
-    juzNumber: number,
-    surahNumber: number,
-    query: JuzSurahQuery
-  ) {
+  async findSurahTafsirByJuz(juzNumber: number, surahNumber: number) {
     const juzInfo = juzMapping.find((j) => j.juz === juzNumber);
 
     if (!juzInfo) {
@@ -293,26 +270,12 @@ export class JuzService {
       return null;
     }
 
-    // Build where clause for verses in juz
-    const verseWhere: any = {
-      surahNumber,
-      juz: juzNumber,
-    };
-
-    // Apply verse filter
-    if (query.fromVerse || query.toVerse) {
-      verseWhere.number = {};
-      if (query.fromVerse) {
-        verseWhere.number.gte = query.fromVerse;
-      }
-      if (query.toVerse) {
-        verseWhere.number.lte = query.toVerse;
-      }
-    }
-
-    // Get verse numbers in this juz for this surah
+    // Get all verse numbers in this juz for this surah
     const versesInJuz = await this.prisma.verse.findMany({
-      where: verseWhere,
+      where: {
+        surahNumber,
+        juz: juzNumber,
+      },
       select: { number: true },
       orderBy: { number: "asc" },
     });
